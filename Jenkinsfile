@@ -2,24 +2,20 @@ pipeline {
     agent {
         label 'java-slave'
     }
-
     stages {
-        stage('Build') {
+        stage ('Build') {
             steps {
-                echo "This is building the project"
+                echo "Building the project"
             }
         }
     }
-
     post {
         always {
-            mail bcc: '',
-                 body: 'This is a test mail sent through pipeline',
-                 cc: '',
-                 from: '',
-                 replyTo: '',
-                 subject: 'Test Pipeline Mail',
-                 to: 'bhairavaprasadramakoti@gmail.com'
+            script {
+                def subject = "Job Status is: ${currentBuild.currentResult}"
+                def body = "Build Number is ${currentBuild.number}\n" + "status is ${currentBuild.currentResult}\n" + "Job URL is ${env.BUILD_URL}"
+                mail to: 'bhairavaprasadramakoti@gmail.com',subject: subject, body: body
+            }
         }
     }
 }
